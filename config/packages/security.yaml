@@ -1,0 +1,30 @@
+security:
+    # Password hashers configuration
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # User providers
+    providers:
+        users_in_memory: { memory: null }
+
+    # Firewalls
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: users_in_memory
+            logout:
+                path: app_logout
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                always_remember_me: true
+
+    # Access control
+    access_control:
+        # Example: Only allow ROLE_ADMIN to access URLs starting with /admin
+        # - { path: ^/admin, roles: ROLE_ADMIN }

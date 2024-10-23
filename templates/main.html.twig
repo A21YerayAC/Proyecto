@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}{% endblock %}
+
+{% block body %}
+	<!-- Esta página es donde se presentarán las publicaciones de los usuarios -->
+	<div class="container-fluid">
+		<div
+			class="row">
+			<!-- Aside de funciones-->
+			<aside class="col-md-2 p-0 bg-light border-end sticky-top position-relative" style="z-index: 1;">
+				<div class="funciones p-3 sticky-left sticky-top">
+					<p class="logo mb-5">LOGO</p>
+					<a href="#" class="d-block mt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-house-door-fill"></i>
+						Inicio</a>
+					<a href="#" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-search"></i>
+						Búsqueda</a>
+					<a href="#" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-chat"></i>
+						Mensajes</a>
+					<a href="#" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-bell-fill"></i>
+						Notificaciones</a>
+					<a href="#" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-plus-circle-dotted"></i>
+						Crear</a>
+					<a href="#" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-person-circle"></i>
+						Perfil</a>
+				</div>
+			</aside>
+
+			<!-- Área de publicaciones -->
+			<div class="col-md-7">
+				<div class="publicacion mb-4 border">
+					<div class="d-flex justify-content-between">
+						<div class="d-flex align-items-center">
+							<img src="{{ asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px;">
+							<div class="ms-2">
+								<strong>Usuario1
+									<span class="badge bg-warning">4.5 ★</span>
+								</strong>
+							</div>
+						</div>
+					</div>
+					<div class="titulo mt-2 ml-2">
+						<h2>Título2</h2>
+					</div>
+					<div class="descripcion mt-2 ml-2">
+						<p>Esta es la descripción de la publicación...</p>
+					</div>
+					<div class="imagenes mt-2">
+						<img src="{{ asset('build/images/defaultImage.webp') }}" alt="Imagen" class="img-fluid">
+					</div>
+					<div class="d-flex justify-content-start mt-2">
+						<button class="btn btn-link me-3">
+							<i class="bi bi-hand-thumbs-up"></i>
+						</button>
+						<button class="btn btn-link me-3">
+							<i class="bi bi-chat"></i>
+						</button>
+						<button class="btn btn-link">
+							<i class="bi bi-share"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- Otra publicación de ejemplo -->
+				<div class="publicacion mb-4 border">
+					<div class="d-flex justify-content-between">
+						<div class="d-flex align-items-center">
+							<img src="{{ asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px;">
+							<div class="ms-2">
+								<strong>Usuario2
+									<span class="badge bg-warning">4.0 ★</span>
+								</strong>
+							</div>
+						</div>
+					</div>
+					<div class="titulo mt-2 ml-2">
+						<h2>Título2</h2>
+					</div>
+					<div class="descripcion mt-2 ml-2">
+						<p>Descripción de otra publicación...</p>
+					</div>
+					<div class="imagenes mt-2">
+						<img src="{{ asset('build/images/defaultImage.webp') }}" alt="Imagen" class="img-fluid">
+					</div>
+					<div class="d-flex justify-content-start mt-2">
+						<button class="btn btn-link me-3">
+							<i class="bi bi-hand-thumbs-up"></i>
+						</button>
+						<button class="btn btn-link me-3">
+							<i class="bi bi-chat"></i>
+						</button>
+						<button class="btn btn-link">
+							<i class="bi bi-share"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<aside
+				class="col-md-3 p-3 border-start sticky-top ">
+				<!-- Sugerencias -->
+				<div class="notificaciones border rounded p-3 mb-3 ">
+					<h5>Sugerencias para ti</h5>
+					<div class="sugerencia mb-2">
+						<img src="{{ asset('build/images/usuario.jpeg') }}" alt="Sugerencia 1" class="rounded-circle" style="width: 40px; height: 40px;">
+						<span class="ms-2">Usuario sugerido 1</span>
+						<a href="#" class="btn btn-sm btn-primary ms-auto">Seguir</a>
+					</div>
+					<div class="sugerencia mb-2">
+						<img src="{{ asset('build/images/usuario.jpeg') }}" alt="Sugerencia 2" class="rounded-circle" style="width: 40px; height: 40px;">
+						<span class="ms-2">Usuario sugerido 2</span>
+						<a href="#" class="btn btn-sm btn-primary ms-auto">Seguir</a>
+					</div>
+				</div>
+			</aside>
+		</div>
+
+
+	{% endblock %}
+	{% block footer %}
+		{{ parent() }}
+	{% endblock %}

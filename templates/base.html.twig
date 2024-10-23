@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" class="vh-100">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="icon" href="{{ asset('build/images/Designer.jpeg') }}">
+
+		{% block header %}
+			<div class="header bg-white sticky-top">
+				<p class="logo">LOGO</p>
+			</div>
+		{% endblock %}
+
+		{% block title %}
+			<title>Proyecto Yeray Arosa</title>
+		{% endblock %}
+
+		{% block stylesheets %}
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+			<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+			<style>
+				.logo {
+					text-align: center;
+					font-size: 30px;
+					font-weight: bold;
+					border: 1px solid #ccc;
+					width: 100px;
+					height: 100px;
+					margin: 0 auto;
+					padding-top: 25px;
+				}
+
+				.header {
+					text-align: center;
+					border-bottom: 1px solid #ccc;
+					height: 100px;
+				}
+
+				html,
+				body {
+					height: 100%;
+				}
+
+				body {
+					display: flex;
+					flex-direction: column;
+				}
+
+				.content {
+					flex: 1; /* Este es el contenedor de contenido que crecerá para llenar el espacio */
+				}
+
+				.footer {
+					margin-top: auto; /* Esto empuja el footer al final */
+				}
+			</style>
+		{% endblock %}
+	</head>
+	<body>
+		<div class="content">
+			{% block body %}
+				<h1>Bienvenido a Proyecto Yeray Arosa</h1>
+
+			{% endblock %}
+		</div>
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+		{% block footer %}
+			<footer class="footer bg-primary">
+				<p class="text-center text-white">Proyecto Yeray Arosa</p>
+			</footer>
+		{% endblock %}
+	</body>
+</html>
