@@ -3,7 +3,7 @@ framework:
         failure_transport: failed
 
         transports:
-            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            default: '%env(MESSENGER_TRANSPORT_DSN)%'
             async:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 options:

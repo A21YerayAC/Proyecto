@@ -8,6 +8,11 @@
 	<div class="container d-flex justify-content-center align-items-center ">
 		<div class="register-container w-50 mt-5">
 			<h2 class="text-center">Registro</h2>
+			{% for message in app.flashes('error') %}
+    <div class="alert alert-danger">
+        {{ message }}
+    </div>
+{% endfor %}
 			<form action="{{ path('app_registro') }}" method="post">
 				<div class="form-group">
 					<label for="nombre">Nombre</label>

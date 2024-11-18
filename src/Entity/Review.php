@@ -25,7 +25,7 @@ class Review
     #[ORM\Column]
     private ?int $valoracion = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $fechaPublicacion = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
@@ -65,12 +65,6 @@ class Review
         return $this->id;
     }
 
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
 
     public function getTitulo(): ?string
     {

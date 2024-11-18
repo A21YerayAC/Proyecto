@@ -1,30 +1,25 @@
 security:
-    # Password hashers configuration
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-
-    # User providers
-    providers:
-        users_in_memory: { memory: null }
-
-    # Firewalls
+        App\Entity\User:
+            algorithm: bcrypt
+            cost: 12
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
         main:
-            lazy: true
-            provider: users_in_memory
-            logout:
-                path: app_logout
-            remember_me:
-                secret: '%kernel.secret%'
-                lifetime: 604800
-                path: /
-                always_remember_me: true
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: app_homepage  # Ruta a la que ir cuando el login es exitoso
+                failure_path: app_login  # Redirigir al login si las credenciales son incorrectas
 
-    # Access control
+        # Otros firewalls que puedas tener...
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    # Configuración de la autenticación
     access_control:
-        # Example: Only allow ROLE_ADMIN to access URLs starting with /admin
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/logout, roles: IS_AUTHENTICATED_FULLY }

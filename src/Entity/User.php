@@ -1,63 +1,43 @@
 <?php
-
 namespace App\Entity;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface
+#[ORM\Entity]
+class User implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'integer')]
+    private $id;
 
-    #[ORM\Column(length: 15)]
-    private ?string $User = null;
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    private $email;
 
-    #[ORM\Column(length: 50)]
-    private ?string $email = null;
+    #[ORM\Column(type: 'string')]
+    private $password;
 
-    #[ORM\Column(length: 20)]
-    private ?string $password = null;
+    #[ORM\Column(type: 'json')]
+    private $roles = [];
 
-    #[ORM\Column(length: 255)]
-    private ?string $rol = null;
+    #[ORM\Column(type: 'string', length: 255)]
+    private $user;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $fechaRegistro = null;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'user_followers')]
+    private Collection $seguidores;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $avatar = null;
-
-    /**
-     * @var Collection<int, Review>
-     */
-    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'user')]
-    private Collection $reviews;
-
-    /**
-     * @var Collection<int, Comment>
-     */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user')]
-    private Collection $comments;
-
-    /**
-     * @var Collection<int, Like>
-     */
-    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user')]
-    private Collection $likes;
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'seguidores')]
+    private Collection $siguiendo;
 
     public function __construct()
     {
-        $this->reviews = new ArrayCollection();
-        $this->comments = new ArrayCollection();
-        $this->likes = new ArrayCollection();
+        $this->seguidores = new ArrayCollection();
+        $this->siguiendo = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -65,20 +45,42 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getUser(): ?string
+    public function getEmail(): ?string
     {
-        return $this->User;
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+        return $this;
     }
 
     public function getRoles(): array
     {
-        // Asigna roles predeterminados (puede cambiar según tu lógica)
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
     }
 
     public function eraseCredentials()
     {
-        // Si tienes datos sensibles, elimínalos aquí (no es obligatorio).
+    }
+
+    public function getUsername(): string
+    {
+        return $this->email;
     }
 
     public function getUserIdentifier(): string
@@ -86,29 +88,20 @@ class User implements UserInterface
         return $this->email;
     }
 
-    public function setUser(string $User): static
+    public function getUser(): ?string
     {
-        $this->User = $User;
+        return $this->user;
+    }
 
+    public function setNombre(string $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 
-    public function setId(int $id): static
+    public function setPassword(string $password): self
     {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
+        $this->password = $password;
         return $this;
     }
 
@@ -117,134 +110,36 @@ class User implements UserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getRol(): ?string
-    {
-        return $this->rol;
-    }
-
-    public function setRol(string $rol): static
-    {
-        $this->rol = $rol;
-
-        return $this;
-    }
-
-    public function getFechaRegistro(): ?\DateTimeInterface
-    {
-        return $this->fechaRegistro;
-    }
-
-    public function setFechaRegistro(\DateTimeInterface $fechaRegistro): static
-    {
-        $this->fechaRegistro = $fechaRegistro;
-
-        return $this;
-    }
-
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(?string $avatar): static
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Review>
+     * @return Collection<int, User>
      */
-    public function getReviews(): Collection
+    public function getSeguidores(): Collection
     {
-        return $this->reviews;
+        return $this->seguidores;
     }
 
-    public function addReview(Review $review): static
+    public function addSeguidor(User $user): self
     {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReview(Review $review): static
-    {
-        if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
-            if ($review->getUser() === $this) {
-                $review->setUser(null);
-            }
+        if (!$this->seguidores->contains($user)) {
+            $this->seguidores->add($user);
+            $user->addSiguiendo($this);  // Asegura que el otro usuario también lo siga
         }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Comment>
+     * @return Collection<int, User>
      */
-    public function getComments(): Collection
+    public function getSiguiendo(): Collection
     {
-        return $this->comments;
+        return $this->siguiendo;
     }
 
-    public function addComment(Comment $comment): static
+    public function addSiguiendo(User $user): self
     {
-        if (!$this->comments->contains($comment)) {
-            $this->comments->add($comment);
-            $comment->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeComment(Comment $comment): static
-    {
-        if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
-            if ($comment->getUser() === $this) {
-                $comment->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Like>
-     */
-    public function getLikes(): Collection
-    {
-        return $this->likes;
-    }
-
-    public function addLike(Like $like): static
-    {
-        if (!$this->likes->contains($like)) {
-            $this->likes->add($like);
-            $like->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLike(Like $like): static
-    {
-        if ($this->likes->removeElement($like)) {
-            // set the owning side to null (unless already changed)
-            if ($like->getUser() === $this) {
-                $like->setUser(null);
-            }
+        if (!$this->siguiendo->contains($user)) {
+            $this->siguiendo->add($user);
         }
 
         return $this;
