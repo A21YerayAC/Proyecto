@@ -1,0 +1,10 @@
+# Use the front controller as the main entry point to all requests.
+RewriteEngine On
+
+# Allow access to assets and Symfony's public files
+RewriteRule ^(index\.php|css|js|images|bundles)/ - [L]
+
+# Rewrite all other requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /index.php [QSA,L]
