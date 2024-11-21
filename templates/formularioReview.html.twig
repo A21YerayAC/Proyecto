@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Crear nueva reseña</h1>
+    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': ''}}) }}
+    <div class="form-group mb-3">
+        {{ form_label(form.titulo, 'Título', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.titulo, {'attr': {'class': 'form-control', 'placeholder': 'Escribe el título aquí'}}) }}
+        {{ form_errors(form.titulo) }}
+    </div>
+    <div class="form-group mb-3">
+        {{ form_label(form.contenido, 'Contenido', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.contenido, {'attr': {'class': 'form-control', 'placeholder': 'Escribe tu reseña'}}) }}
+        {{ form_errors(form.contenido) }}
+    </div>
+    <div class="form-group mb-3">
+        {{ form_label(form.valoracion, 'Calificación', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.valoracion, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.valoracion) }}
+    </div>
+    <div class="form-group mb-3">
+        {{ form_label(form.photos, 'Subir fotos', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.photos, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.photos) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Crear reseña</button>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

@@ -22,6 +22,14 @@ class Review
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenido = null;
 
+    #[ORM\Column(type: 'json')]
+    private array $imagenes = [];
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+private ?string $imagenRuta = null;
+
+
+
     #[ORM\Column]
     private ?int $valoracion = null;
 
@@ -35,7 +43,7 @@ class Review
     /**
      * @var Collection<int, Photo>
      */
-    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'review')]
+    #[ORM\OneToMany(targetEntity: Photo::class, mappedBy: 'review', cascade: ['persist', 'remove'])]
     private Collection $photos;
 
     /**
@@ -74,6 +82,18 @@ class Review
     public function setTitulo(string $titulo): static
     {
         $this->titulo = $titulo;
+
+        return $this;
+    }
+
+        public function getImagenRuta(): ?string
+    {
+        return $this->imagenRuta;
+    }
+
+    public function setImagenRuta(?string $imagenRuta): static
+    {
+        $this->imagenRuta = $imagenRuta;
 
         return $this;
     }
@@ -126,31 +146,24 @@ class Review
         return $this;
     }
 
-    /**
-     * @return Collection<int, Photo>
-     */
-    public function getPhotos(): Collection
+    public function getPhotos()
     {
-        return $this->photos;
+        return $this->imagenes;
     }
 
-    public function addPhoto(Photo $photo): static
+    public function addPhoto(String $imagen): static
     {
-        if (!$this->photos->contains($photo)) {
-            $this->photos->add($photo);
-            $photo->setReview($this);
+        if (!in_array($imagen, $this->imagenes)) {
+            $this->imagenes[] = $imagen;
         }
 
         return $this;
     }
 
-    public function removePhoto(Photo $photo): static
+    public function removePhoto(String $imagen): static
     {
-        if ($this->photos->removeElement($photo)) {
-            // set the owning side to null (unless already changed)
-            if ($photo->getReview() === $this) {
-                $photo->setReview(null);
-            }
+        if (($key = array_search($imagen, $this->imagenes)) !== false) {
+            unset($this->imagenes[$key]);
         }
 
         return $this;
