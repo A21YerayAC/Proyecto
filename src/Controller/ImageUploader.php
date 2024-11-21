@@ -12,9 +12,9 @@ class ImageUploader
     {
       
 
-$this->sftp = new SFTP("178.62.211.186");
+$this->sftp = new SFTP("");
 
-if (!$this->sftp->login("root",  "ProyectoYer4y")) {
+if (!$this->sftp->login("",  "")) {
     throw new \Exception('No se pudo conectar a SFTP');
 }
 
