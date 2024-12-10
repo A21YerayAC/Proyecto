@@ -37,16 +37,9 @@ class ReviewFormType extends AbstractType
             ->add('photos', FileType::class, [
                 'label' => 'Imágenes',
                 'mapped' => false,  // No se mapea al campo 'imagenes' de la entidad
-                'multiple' => true,  // Habilitar la selección de múltiples archivos
+                'multiple' => true,  // Permitir la selección de múltiples archivos
                 'required' => false,
                 'attr' => ['class' => 'form-control-file'],
-                'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => ['image/jpeg', 'image/png'],
-                        'mimeTypesMessage' => 'Por favor sube un formato de imagen válido (JPEG or PNG)',
-                    ])
-                ],
             ]);
     }
 

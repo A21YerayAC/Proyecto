@@ -3,20 +3,21 @@ namespace App\Controller;
 
 use phpseclib3\Net\SFTP;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ImageUploader
 {
     private $sftp;
 
-    public function __construct()
+    public function __construct(ParameterBagInterface $params)
     {
       
 
-$this->sftp = new SFTP("");
+        $this->sftp = new SFTP($params->get('sftp_host'));
 
-if (!$this->sftp->login("",  "")) {
-    throw new \Exception('No se pudo conectar a SFTP');
-}
+        if (!$this->sftp->login($params->get('sftp_user'), $params->get('sftp_password'))) {
+            throw new \Exception('No se pudo conectar a SFTP');
+        }
 
     }
 

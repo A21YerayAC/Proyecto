@@ -27,17 +27,19 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $user;
 
-    #[ORM\ManyToMany(targetEntity: User::class)]
-    #[ORM\JoinTable(name: 'user_followers')]
-    private Collection $seguidores;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $fotoPerfil = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'seguidores')]
-    private Collection $siguiendo;
-
-    public function __construct()
+    public function getFotoPerfil(): ?string
     {
-        $this->seguidores = new ArrayCollection();
-        $this->siguiendo = new ArrayCollection();
+        return $this->fotoPerfil;
+    }
+
+    public function setFotoPerfil(?string $fotoPerfil): static
+    {
+        $this->fotoPerfil = $fotoPerfil;
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -80,7 +82,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getUsername(): string
     {
-        return $this->email;
+        return $this->user;
     }
 
     public function getUserIdentifier(): string
@@ -93,7 +95,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->user;
     }
 
-    public function setNombre(string $user): self
+    public function setUsername(string $user): self
     {
         $this->user = $user;
         return $this;
@@ -110,38 +112,4 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->password;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getSeguidores(): Collection
-    {
-        return $this->seguidores;
-    }
-
-    public function addSeguidor(User $user): self
-    {
-        if (!$this->seguidores->contains($user)) {
-            $this->seguidores->add($user);
-            $user->addSiguiendo($this);  // Asegura que el otro usuario también lo siga
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, User>
-     */
-    public function getSiguiendo(): Collection
-    {
-        return $this->siguiendo;
-    }
-
-    public function addSiguiendo(User $user): self
-    {
-        if (!$this->siguiendo->contains($user)) {
-            $this->siguiendo->add($user);
-        }
-
-        return $this;
-    }
 }

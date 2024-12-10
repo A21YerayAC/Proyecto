@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2>Mi Perfil</h2>
+
+        <!-- Foto de perfil -->
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{{ user.fotoPerfil is not null ? user.fotoPerfil : asset('build/images/usuario.jpeg') }}" 
+                     alt="Foto de perfil" 
+                     class="img-fluid rounded-circle" 
+                     width="150" height="150">
+            </div>
+
+            <div class="col-md-8">
+                <h3>{{ user.user }}</h3>
+                <p>Email: {{ user.email }}</p>
+                <!-- Aquí puedes agregar más información sobre el usuario -->
+            </div>
+        </div>
+
+        <!-- Botón para editar perfil -->
+        <a href="#" class="btn btn-primary mt-3">Editar perfil</a>
+    </div>
+{% endblock %}
