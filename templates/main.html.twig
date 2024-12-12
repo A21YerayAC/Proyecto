@@ -19,7 +19,7 @@
 				<!-- Contenido del aside para móviles -->
 				<div class="funciones">
 					<div class="funciones p-3 sticky-left sticky-top">
-						<p class="logo mb-5">LOGO</p>
+						<p class="logo" style="padding-top:0px;"><img src="{{ asset('build/images/logo.jpg') }}" style="width:100px; height:99px"/></p>
 						<a href="#" class="d-block mt-3 mb-3 border-bottom text-center">
 							<i class="bi bi-house-door-fill"></i>
 							Inicio</a>
@@ -68,7 +68,7 @@
 			<!-- Barra lateral izquierda -->
 			<aside class="col-md-2 p-0 bg-light border-end sticky-top position-relative d-none d-md-block" style="z-index: 1;">
 				<div class="funciones p-3 sticky-left sticky-top">
-					<p class="logo mb-5">LOGO</p>
+					<p class="logo" style="padding-top:0px;"><img src="{{ asset('build/images/logo.jpg') }}" style="width:100px; height:99px"/></p>
 					<a href="#" class="d-block mt-3 mb-3 border-bottom text-center">
 						<i class="bi bi-house-door-fill"></i>
 						Inicio</a>
@@ -113,10 +113,10 @@
 				{% if followedReviews is not empty %}
 					{% for review in followedReviews %}
 						<div
-							class="publicacion mb-4 border">
+							class="publicacion mb-4 mt-4 border">
 							<!-- Mostrar la reseña como antes -->
 							<div class="d-flex justify-content-between">
-								<div class="d-flex align-items-center">
+								<div class="d-flex align-items-center mt-4 ms-2">
 									<img src="{{ review.user.fotoPerfil is not null ? review.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px;">
 									<div class="ms-2">
 										<strong>
@@ -186,7 +186,7 @@
 								<i class="bi bi-share"></i>
 							</button>
 						</div>
-						<ul id="comment-list" type="none">
+						<ul id="comment-list" type="none" class="mt-4">
 							{% for comment in review.comments %}
 								<li><img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 30px; height: 30px;"/>
 									<strong>{{ comment.user.username }}</strong>:
@@ -208,7 +208,7 @@
 						class="publicacion mb-4 border">
 						<!-- Mostrar la reseña como antes -->
 						<div class="d-flex justify-content-between">
-							<div class="d-flex align-items-center">
+							<div class="d-flex align-items-center mt-4 ms-2">
 								<img src="{{ review.user.fotoPerfil is not null ? review.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px;">
 								<div class="ms-2">
 									<strong>
@@ -278,7 +278,7 @@
 							<i class="bi bi-share"></i>
 						</button>
 					</div>
-					<ul id="comment-list" type="none">
+					<ul id="comment-list" type="none" class="mt-4">
 						{% for comment in review.comments %}
 							<li><img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 30px; height: 30px;"/>
 								<strong>{{ comment.user.username }}</strong>:
@@ -299,14 +299,23 @@
 		<div class="notificaciones border rounded p-3 mb-3">
 			<h5>Sugerencias para ti</h5>
 			{% for suggestedUser in suggestedUsers %}
-				<div class="sugerencia mb-2">
-					<img src="{{ suggestedUser.fotoPerfil is not null ? suggestedUser.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Sugerencia" class="rounded-circle" style="width: 40px; height: 40px;">
-					<span class="ms-2">{{ suggestedUser.user }}</span>
-					<a href="{{ path('app_follow', {'id': suggestedUser.id}) }}" class="btn btn-sm btn-primary ms-auto">Seguir</a>
-				</div>
-			{% else %}
-				<p>No hay sugerencias disponibles en este momento.</p>
-			{% endfor %}
+    <div class="sugerencia mb-2 d-flex justify-content-between align-items-center">
+        <span class=""> <img src="{{ suggestedUser.fotoPerfil is not null ? suggestedUser.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Sugerencia" class="rounded-circle" style="width: 40px; height: 40px;">
+        {{ suggestedUser.user }}</span>
+        {% if app.user and app.user != suggestedUser %}
+        {% if app.user.isFollowing(suggestedUser) %}
+            <a href="{{ path('app_unfollow', {'id': suggestedUser.id}) }}" class="btn btn-danger btn-sm custom-follow-button">Dejar de seguir</a>
+        {% else %}
+            <a href="{{ path('app_follow', {'id': suggestedUser.id}) }}" class="btn btn-primary btn-sm custom-follow-button">Seguir</a>
+        {% endif %}
+    {% endif %}
+</div>
+{% else %}
+    <p>No hay sugerencias disponibles en este momento.</p>
+{% endfor %}
+
+
+
 		</div>
 	</aside>
 </div></div><script src="{{ asset('build/app.js') }}" defer></script>{% endblock %}

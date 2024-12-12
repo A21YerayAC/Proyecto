@@ -20,10 +20,11 @@ class Notification
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'notifications')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'notifications')]
+    #[ORM\JoinColumn(name: 'review_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private ?Review $review = null;
 
     #[ORM\Column(type: 'text', nullable: true)]

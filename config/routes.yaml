@@ -3,6 +3,10 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+app_delete_profile:
+    path: /profile/{username}/delete
+    controller: App\Controller\ProfileController::delete
+    methods: [POST]
 
 
     

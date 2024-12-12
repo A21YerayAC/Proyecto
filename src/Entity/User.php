@@ -33,18 +33,38 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(
         name: 'user_followers',
-        joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')],
-        inverseJoinColumns: [new ORM\JoinColumn(name: 'follower_id', referencedColumnName: 'id')]
+        joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'follower_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     )]
     private Collection $followers;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'followers')]
     private Collection $following;
 
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Like::class, cascade: ['remove'], orphanRemoval: true)]
+private Collection $likes;
+
+#[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, cascade: ['remove'], orphanRemoval: true)]
+private Collection $comments;
+
+// Métodos getters y setters
+public function getLikes(): Collection
+{
+    return $this->likes;
+}
+
+public function getComments(): Collection
+{
+    return $this->comments;
+}
+
     public function __construct()
     {
         $this->followers = new ArrayCollection();
         $this->following = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     // Métodos para obtener los seguidores y seguidos

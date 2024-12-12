@@ -9,12 +9,12 @@
 
 
 		{% block header %}
-    <div class="header bg-white d-flex justify-content-between align-items-center px-3">
-        <p class="logo">LOGO</p>
+    <div class="header bg-white d-flex justify-content-between align-items-center px-3" >
+        <p class="logo" style="padding-top:0px;"><img src="{{ asset('build/images/logo.jpg') }}" style="width:100px; height:99px"/></p>
 
         {% if app.user %}
             <div class="user-info d-flex align-items-center">
-                <img src="{{ app.user.fotoPerfil }}" alt="Foto de perfil" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                <img src="{{ app.user.fotoPerfil is not null ? app.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle me-2" style="width: 40px; height: 40px;">
                 <span class="username me-3">{{ app.user.username }}</span>
                 <a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-danger d-none d-md-block">Cerrar sesión</a>
             </div>
@@ -35,7 +35,6 @@
 					text-align: center;
 					font-size: 30px;
 					font-weight: bold;
-					border: 1px solid #ccc;
 					width: 100px;
 					height: 100px;
 					margin: 0 auto;

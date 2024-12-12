@@ -37,7 +37,7 @@ private ?string $imagenRuta = null;
     private ?\DateTimeInterface $fechaPublicacion = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     /**
@@ -49,7 +49,7 @@ private ?string $imagenRuta = null;
     /**
      * @var Collection<int, Comment>
      */
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'review')]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'review', cascade:['remove']) ]
     private Collection $comments;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
@@ -58,7 +58,7 @@ private ?string $imagenRuta = null;
     /**
      * @var Collection<int, Like>
      */
-    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'review')]
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'review', cascade:['remove']) ]
     private Collection $likes;
 
     

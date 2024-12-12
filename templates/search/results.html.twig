@@ -139,7 +139,7 @@
 							class="publicacion mb-4 border rounded shadow-sm p-3">
 							<!-- Mostrar la reseña como antes -->
 							<div class="d-flex justify-content-between">
-								<div class="d-flex align-items-center">
+								<div class="d-flex align-items-center mt-4 ms-2">
 									<img src="{{ review.user.fotoPerfil is not null ? review.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px;">
 									<div class="ms-2">
 										<strong>
@@ -209,7 +209,7 @@
 								<i class="bi bi-share"></i>
 							</button>
 						</div>
-						<ul id="comment-list" type="none">
+						<ul id="comment-list" type="none" class="mt-4">
 							{% for comment in review.comments %}
 								<li><img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 30px; height: 30px;"/>
 									<strong>{{ comment.user.username }}</strong>:

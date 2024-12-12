@@ -4,6 +4,13 @@
     height: 200px; 
     object-fit: cover;
     }
+
+    .custom-follow-button {
+        font-size: 1.25rem; /* Tamaño más grande en dispositivos móviles */
+        padding: 0.75rem 1.5rem;
+        min-width: 120px;
+        height: 45px; /* Altura adaptada para móviles */
+    }
 }
 
 @media (min-width: 769px) {
@@ -25,3 +32,22 @@
 footer{
     margin-top: 60px;
 }
+
+.logo{
+    padding-top:0px;
+}
+
+.comment-list{
+    padding: 0px;
+}
+
+/* Archivo CSS o en tu archivo correspondiente */
+.custom-follow-button {
+    position: absolute;
+    right: 0;
+    font-size: 1rem; /* Tamaño de fuente por defecto */
+    padding: 0.5rem 1rem; /* Espaciado interno del botón */
+}
+
+
+

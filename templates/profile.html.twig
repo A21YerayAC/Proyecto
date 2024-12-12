@@ -110,8 +110,8 @@
 			</aside>
 
 			<!-- Contenido principal -->
-			<div class="col-md-10">
-				<h2>Mi Perfil</h2>
+			<div class="col-md-10 mt-4 ">
+				<h2>{{ user.user }}</h2>
 
 				<!-- Foto de perfil -->
 				<div class="row">
@@ -119,29 +119,34 @@
 						<img src="{{ user.fotoPerfil is not null ? user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="img-fluid rounded-circle" width="150" height="150">
 					</div>
 					<div class="col-md-8">
-						<h3>{{ user.user }}</h3>
+						<h3 class="d-flex justify-content-around align-items-center">
+    <div class="d-flex align-items-center">
+        <span class="text-muted small me-2">Seguidores: {{ user.followers | length }}</span>
+        <span class="text-muted small me-2">Seguidos: {{ user.following | length }}</span>
+        {% if app.user and app.user != user %}
+            {% if app.user.isFollowing(user) %}
+                <a href="{{ path('app_unfollow', { 'id': user.id }) }}" class="btn btn-danger btn-sm ms-3">Dejar de seguir</a>
+            {% else %}
+                <a href="{{ path('app_follow', { 'id': user.id }) }}" class="btn btn-primary btn-sm ms-3">Seguir</a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('app_edit_profile', {'username': app.user.username}) }}" class="btn btn-primary btn-sm ms-3">Editar perfil</a>
+        {% endif %}
+    </div>
+</h3>
 
 					</div>
 				</div>
 
 				{# Mostrar el botón de editar solo si es el perfil del usuario autenticado #}
-				{% if app.user and app.user != user %}
-					{% if app.user.isFollowing(user) %}
-						<a href="{{ path('app_unfollow', { 'id': user.id }) }}" class="btn btn-danger mt-3">Dejar de seguir</a>
-					{% else %}
-						<a href="{{ path('app_follow', { 'id': user.id }) }}" class="btn btn-primary mt-3">Seguir</a>
-					{% endif %}
-				{% else %}
-					<a href="{{ path('app_edit_profile',{'username': app.user.username}) }}" class="btn btn-primary mt-3">Editar perfil</a>
-				{% endif %}
-
+				
 				<!-- Reseñas -->
 				<div class="row mt-4">
 					<div class="col-12">
 						{% for review in reviews %}
 							<div class="publicacion mb-4 border">
 								<div class="d-flex justify-content-between">
-									<div class="d-flex align-items-center">
+									<div class="d-flex align-items-center mt-4 ms-2">
 										<img src="{{ user.fotoPerfil is not null ? user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px;">
 										<div class="ms-2">
 											<strong>{{ review.user.user }}
@@ -213,7 +218,7 @@
 							</div>
                             {% if review.comments|length > 0 %}
                             <p>Comentarios:</p>
-							<ul id="comment-list" type="none">
+							<ul id="comment-list" type="none" class="mt-4">
 						{% for comment in review.comments %}
 							<li><img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 30px; height: 30px;"/> <strong>{{ comment.user.username }}</strong>: {{ comment.contenido }}</li>
 						{% endfor %}

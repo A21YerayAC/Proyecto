@@ -45,7 +45,7 @@ class CommentController extends AbstractController
             $notification->setUser($review->getUser());
             $notification->setType('comment');
             $notification->setReview($review);
-            $notification->setMessage($user->getUsername() . ' ha comentado tu reseña: ' . $review->getTitulo() . $content);
+            $notification->setMessage($user->getUsername() . ' ha comentado tu reseña: ' . $review->getTitulo() . " " . $content);
             $notification->setCreatedAt(new \DateTime());
 
             $entityManager->persist($notification);
