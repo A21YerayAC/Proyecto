@@ -21,6 +21,7 @@ class ReviewRepository extends ServiceEntityRepository
             ->innerJoin('r.user', 'u') // Asumiendo que cada publicación tiene un usuario relacionado
             ->where('u IN (:users)')
             ->setParameter('users', $users)
+            ->orderBy('r.fechaPublicacion', 'DESC')
             ->getQuery()
             ->getResult();
     }

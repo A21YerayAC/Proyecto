@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Editar Perfil</h2>
+    
+    {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_row(form.user) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.password) }}
+            {{ form_row(form.fotoPerfil) }}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -30,6 +30,58 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $fotoPerfil = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(
+        name: 'user_followers',
+        joinColumns: [new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'follower_id', referencedColumnName: 'id')]
+    )]
+    private Collection $followers;
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'followers')]
+    private Collection $following;
+
+    public function __construct()
+    {
+        $this->followers = new ArrayCollection();
+        $this->following = new ArrayCollection();
+    }
+
+    // Métodos para obtener los seguidores y seguidos
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    // Método para seguir a otro usuario
+    public function follow(User $user): void
+    {
+        if (!$this->isFollowing($user)) {
+            $this->following->add($user);
+            $user->followers->add($this);
+        }
+    }
+
+    // Método para dejar de seguir a otro usuario
+    public function unfollow(User $user): void
+    {
+        if ($this->isFollowing($user)) {
+            $this->following->removeElement($user);
+            $user->followers->removeElement($this);
+        }
+    }
+
+    // Verificar si el usuario sigue a otro
+    public function isFollowing(User $user): bool
+    {
+        return $this->following->contains($user);
+    }
+
     public function getFotoPerfil(): ?string
     {
         return $this->fotoPerfil;

@@ -1,11 +1,14 @@
 <?php
 
 namespace App\Entity;
-
-use App\Repository\CommentRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Entity\User;
+use App\Entity\Review;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Types;
+use App\Repository\CommentRepository;
 
+
+// Entidad Comment
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
@@ -20,13 +23,13 @@ class Comment
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fechaComentario = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
+#[ORM\JoinColumn(nullable: false)]
+private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Review $review = null;
+#[ORM\ManyToOne(targetEntity: Review::class, inversedBy: 'comments')]
+#[ORM\JoinColumn(nullable: false)]
+private ?Review $review = null;
 
     public function getId(): ?int
     {

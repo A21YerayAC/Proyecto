@@ -61,6 +61,10 @@ private ?string $imagenRuta = null;
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'review')]
     private Collection $likes;
 
+    
+
+    
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -146,7 +150,7 @@ private ?string $imagenRuta = null;
         return $this;
     }
 
-    public function getPhotos()
+    public function getImagenes()
     {
         return $this->imagenes;
     }
@@ -240,4 +244,16 @@ private ?string $imagenRuta = null;
 
         return $this;
     }
+
+    // src/Entity/Review.php
+public function isLikedByUser(User $user): bool
+{
+    foreach ($this->likes as $like) {
+        if ($like->getUser() === $user) {
+            return true;
+        }
+    }
+    return false;
+}
+
 }

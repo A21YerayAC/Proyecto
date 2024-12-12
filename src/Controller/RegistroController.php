@@ -72,7 +72,7 @@ class RegistroController extends AbstractController
                     $imageUploader->uploadImage($foto, $newFilename);
 
                     // Guardar la ruta de la imagen en la base de datos
-                    $fotoPerfil = ('http://' . $params->get('sftp_user') . '/imagenes/' . $newFilename);
+                    $fotoPerfil = ('http://' . $params->get('sftp_host') . '/imagenes/' . $newFilename);
 
                 } catch (\Exception $e) {
                     $this->addFlash('error', 'No se pudo subir la foto. Por favor, inténtalo de nuevo.');

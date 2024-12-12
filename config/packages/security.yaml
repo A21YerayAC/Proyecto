@@ -10,6 +10,9 @@ security:
                 check_path: app_login
                 default_target_path: app_homepage  # Ruta a la que ir cuando el login es exitoso
                 failure_path: app_login  # Redirigir al login si las credenciales son incorrectas
+            logout:
+                path: app_logout
+                target: /
 
         # Otros firewalls que puedas tener...
     providers:

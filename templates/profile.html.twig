@@ -1,26 +1,232 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h2>Mi Perfil</h2>
 
-        <!-- Foto de perfil -->
-        <div class="row">
-            <div class="col-md-4">
-                <img src="{{ user.fotoPerfil is not null ? user.fotoPerfil : asset('build/images/usuario.jpeg') }}" 
-                     alt="Foto de perfil" 
-                     class="img-fluid rounded-circle" 
-                     width="150" height="150">
-            </div>
+	{% for label, messages in app.flashes %}
+		<div class="alert alert-{{ label }}">
+			{% for message in messages %}
+				<p>{{ message }}</p>
+			{% endfor %}
+		</div>
+	{% endfor %}
 
-            <div class="col-md-8">
-                <h3>{{ user.user }}</h3>
-                <p>Email: {{ user.email }}</p>
-                <!-- Aquí puedes agregar más información sobre el usuario -->
+	<div class="container-fluid">
+
+		<button class="btn btn-primary d-md-none position-fixed" style="z-index: 1050; top: 10px; left: 10px;" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Menú lateral para móviles -->
+    <div class="offcanvas offcanvas-start bg-light" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="mobileMenuLabel">Menú</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Contenido del aside para móviles -->
+            <div class="funciones">
+                <div class="funciones p-3 sticky-left sticky-top">
+					<p class="logo mb-5">LOGO</p>
+					<a href="#" class="d-block mt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-house-door-fill"></i>
+						Inicio</a>
+					<a href="#" class="d-block pt-3 mb-3 border-bottom text-center" data-bs-toggle="collapse" data-bs-target="#searchBar" aria-expanded="false" aria-controls="searchBar">
+						<i class="bi bi-search"></i>
+						Búsqueda
+					</a>
+
+					<!-- Barra de búsqueda dinámica -->
+					<div class="collapse" id="searchBar">
+						<form action="{{ path('app_search') }}" method="get" class="p-3">
+							<input type="text" name="query" class="form-control mb-2" placeholder="Buscar usuarios o publicaciones" required>
+							<button type="submit" class="btn btn-primary w-100">Buscar</button>
+						</form>
+					</div>
+					<a href="{{ path('app_notifications') }}" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-bell-fill {{ notifications|length > 0 ? 'text-danger' : '' }}"></i>
+						Notificaciones
+						{% if notifications|length > 0 %}
+							<span class="badge bg-danger">{{ notifications|length }}</span>
+						{% endif %}
+					</a>
+					<a href="{{ path('app_newReview') }}" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-plus-circle-dotted"></i>
+						Crear</a>
+					{% if app.user %}
+						<a href="{{ path('app_profile', {'username': app.user.getUser()}) }}" class="d-block pt-3 mb-3 border-bottom text-center">
+							<i class="bi bi-person-circle"></i>
+							Perfil
+						</a>
+					{% else %}
+						<a href="{{ path('app_login') }}" class="d-block pt-3 mb-3 border-bottom text-center">
+							<i class="bi bi-person-circle"></i>
+							Iniciar sesión
+						</a>
+					{% endif %}
+
+						<a href="{{ path('app_logout') }}" class="btn btn-sm btn-outline-danger d-md-none">Cerrar sesión</a>
+				</div>
             </div>
         </div>
-
-        <!-- Botón para editar perfil -->
-        <a href="#" class="btn btn-primary mt-3">Editar perfil</a>
     </div>
+
+		<div class="row">
+			<!-- Barra lateral izquierda -->
+			<aside class="col-md-2 p-0 bg-light border-end sticky-top position-relative d-none d-md-block" style="z-index: 1;">
+				<div class="funciones p-3 sticky-top sticky-left">
+					<p class="logo mb-5">LOGO</p>
+					<a href="{{ path('app_homepage') }}" class="d-block mt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-house-door-fill"></i>
+						Inicio
+					</a>
+					<a href="#" class="d-block pt-3 mb-3 border-bottom text-center" data-bs-toggle="collapse" data-bs-target="#searchBar" aria-expanded="false" aria-controls="searchBar">
+						<i class="bi bi-search"></i>
+						Búsqueda
+					</a>
+
+					<!-- Barra de búsqueda dinámica -->
+					<div class="collapse" id="searchBar">
+						<form action="{{ path('app_search') }}" method="get" class="p-3">
+							<input type="text" name="query" class="form-control mb-2" placeholder="Buscar" required>
+							<button type="submit" class="btn btn-primary w-100">Buscar</button>
+						</form>
+					</div>
+					<a href="{{ path('app_notifications') }}" class="d-block pt-3 mb-3 border-bottom text-center">
+    <i class="bi bi-bell-fill {{ notifications|length > 0 ? 'text-danger' : '' }}"></i>
+    Notificaciones
+    {% if notifications|length > 0 %}
+        <span class="badge bg-danger">{{ notifications|length }}</span>
+    {% endif %}
+</a>
+					<a href="{{ path('app_newReview') }}" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-plus-circle-dotted"></i>
+						Crear
+					</a>
+					<a href="{{ path('app_profile', {'username': app.user.getUser()}) }}" class="d-block pt-3 mb-3 border-bottom text-center">
+						<i class="bi bi-person-circle"></i>
+						Perfil
+					</a>
+				</div>
+			</aside>
+
+			<!-- Contenido principal -->
+			<div class="col-md-10">
+				<h2>Mi Perfil</h2>
+
+				<!-- Foto de perfil -->
+				<div class="row">
+					<div class="col-md-4">
+						<img src="{{ user.fotoPerfil is not null ? user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="img-fluid rounded-circle" width="150" height="150">
+					</div>
+					<div class="col-md-8">
+						<h3>{{ user.user }}</h3>
+
+					</div>
+				</div>
+
+				{# Mostrar el botón de editar solo si es el perfil del usuario autenticado #}
+				{% if app.user and app.user != user %}
+					{% if app.user.isFollowing(user) %}
+						<a href="{{ path('app_unfollow', { 'id': user.id }) }}" class="btn btn-danger mt-3">Dejar de seguir</a>
+					{% else %}
+						<a href="{{ path('app_follow', { 'id': user.id }) }}" class="btn btn-primary mt-3">Seguir</a>
+					{% endif %}
+				{% else %}
+					<a href="{{ path('app_edit_profile',{'username': app.user.username}) }}" class="btn btn-primary mt-3">Editar perfil</a>
+				{% endif %}
+
+				<!-- Reseñas -->
+				<div class="row mt-4">
+					<div class="col-12">
+						{% for review in reviews %}
+							<div class="publicacion mb-4 border">
+								<div class="d-flex justify-content-between">
+									<div class="d-flex align-items-center">
+										<img src="{{ user.fotoPerfil is not null ? user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 50px; height: 50px;">
+										<div class="ms-2">
+											<strong>{{ review.user.user }}
+												<span class="badge bg-warning">{{ review.valoracion }}
+													★</span>
+											</strong>
+										</div>
+									</div>
+								</div>
+								<div class="titulo mt-2 ml-2">
+									<h2>{{ review.titulo }}</h2>
+								</div>
+								<div class="descripcion mt-2 ml-2">
+									<p>{{ review.contenido }}</p>
+								</div>
+								<div class="imagenes mt-2">
+									{% if review.imagenes is iterable and review.imagenes|length > 0 %}
+										{% if review.imagenes|length > 1 %}
+											<!-- Carrusel de imágenes -->
+											<div id="carouselReview{{ loop.index }}" class="carousel slide" data-bs-interval="false">
+												<div class="carousel-indicators">
+													{% for image in review.imagenes %}
+														<button type="button" data-bs-target="#carouselReview{{ loop.index }}" data-bs-slide-to="{{ loop.index0 }}" {% if loop.first %} class="active" {% endif %} aria-current="{% if loop.first %}true{% endif %}" aria-label="Slide {{ loop.index }}"></button>
+													{% endfor %}
+												</div>
+												<div class="carousel-inner">
+													{% for image in review.imagenes %}
+														<div class="carousel-item {% if loop.first %}active{% endif %}">
+															<img src="{{ image }}" alt="Imagen {{ loop.index }}" class="d-block w-100 fixed-size-img">
+														</div>
+													{% endfor %}
+												</div>
+												<button class="carousel-control-prev" type="button" data-bs-target="#carouselReview{{ loop.index }}" data-bs-slide="prev">
+													<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+												</button>
+												<button class="carousel-control-next" type="button" data-bs-target="#carouselReview{{ loop.index }}" data-bs-slide="next">
+													<span class="carousel-control-next-icon" aria-hidden="true"></span>
+												</button>
+											</div>
+										{% else %}
+											<!-- Solo una imagen -->
+											<img src="{{ review.imagenes[0] }}" alt="Imagen" class="img-fluid fixed-size-img">
+										{% endif %}
+										{% else %}
+									{% endif %}
+								</div>
+
+								<div class="d-flex justify-content-start mt-2">
+								{% if currentUser %}
+    <button class="btn btn-link like-button {{ review.isLikedByUser(currentUser) ? 'liked' : '' }}" data-review-id="{{ review.id }}">
+        <i class="bi bi-hand-thumbs-up{{ review.isLikedByUser(currentUser) ? '-fill' : '' }}"></i>
+    </button>
+{% else %}
+    <button class="btn btn-link like-button" data-review-id="{{ review.id }}">
+        <i class="bi bi-hand-thumbs-up"></i>
+    </button>
+{% endif %}
+
+								<form id="comment-form" data-review-id="{{ review.id }}">
+									<input type="text" name="content" placeholder="Escribe tu comentario" required></input>
+									<button type="submit" class="btn btn-link me-3">
+										<i class="bi bi-chat"></i>
+									</button>
+								</form>
+								
+								<button class="btn btn-link">
+									<i class="bi bi-share"></i>
+								</button>
+							</div>
+                            {% if review.comments|length > 0 %}
+                            <p>Comentarios:</p>
+							<ul id="comment-list" type="none">
+						{% for comment in review.comments %}
+							<li><img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 30px; height: 30px;"/> <strong>{{ comment.user.username }}</strong>: {{ comment.contenido }}</li>
+						{% endfor %}
+					</ul>
+                    {% endif %}
+							</div>
+						{% else %}
+							<p>No hay reseñas disponibles.</p>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script src="{{ asset('build/app.js') }}" defer></script>
 {% endblock %}

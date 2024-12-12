@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Notificaciones</h1>
+    <ul>
+        {% for notification in notifications %}
+            <li>
+                {% if notification.type == 'like' %}
+                    <div>
+                        {{ notification.message }}.
+                    </div>
+                {% elseif notification.type == 'comment' %}
+                    <div>
+                        {{ notification.message }}.
+                    </div>
+                {% endif %}
+                <small>{{ notification.createdAt | date('Y-m-d H:i') }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

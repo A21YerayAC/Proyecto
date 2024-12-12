@@ -1,13 +1,14 @@
 <?php
-
 namespace App\Entity;
-
-use App\Repository\LikeRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Entity\User;
+use App\Entity\Review;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Types;
+use App\Repository\LikeRepository;
 
+// Entidad Like
 #[ORM\Entity(repositoryClass: LikeRepository::class)]
-#[ORM\Table(name: '`like`')]
+#[ORM\Table(name: 'likes')]
 class Like
 {
     #[ORM\Id]
