@@ -1,16 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2>Editar Perfil</h2>
-    
-    {{ form_start(form) }}
-        <div class="form-group">
-            {{ form_row(form.user) }}
-            {{ form_row(form.email) }}
-            {{ form_row(form.password) }}
-            {{ form_row(form.fotoPerfil) }}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center">Editar Perfil</h2>
+
+                {{ form_start(form) }}
+
+                <div class="form-group">
+                    {{ form_label(form.user, 'Nombre de usuario') }}
+                    {{ form_widget(form.user, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.email, 'Correo Electrónico') }}
+                    {{ form_widget(form.email, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.password, 'Contraseña') }}
+                    {{ form_widget(form.password, { 'attr': {'class': 'form-control'} }) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.fotoPerfil, 'Foto de Perfil') }}
+                    {{ form_widget(form.fotoPerfil, { 'attr': {'class': 'form-control-file'} }) }}
+                </div>
+
+
+                {{ form_end(form) }}
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
-    {{ form_end(form) }}
+    </div>
 {% endblock %}

@@ -80,3 +80,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.querySelector('.borrar-comentario').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const reviewId = this.dataset.reviewId;
+    const content = this.querySelector('input[name="content"]').value;
+
+    fetch(`/comment/delete/${reviewId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Comentario eliminado');
+                window.location.reload();  // Recargar la página
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});

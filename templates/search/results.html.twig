@@ -1,6 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% for label, messages in app.flashes %}
+		<div class="alert alert-{{ label }}">
+			{% for message in messages %}
+				<p>{{ message }}</p>
+			{% endfor %}
+		</div>
+	{% endfor %}
 	<button class="btn btn-primary d-md-none position-fixed" style="z-index: 1050; top: 10px; left: 10px;" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
 		<i class="bi bi-list"></i>
 	</button>
@@ -16,7 +23,7 @@
 			<!-- Contenido del aside para móviles -->
 			<div class="funciones">
 				<div class="funciones p-3 sticky-left sticky-top">
-					<p class="logo mb-5">LOGO</p>
+					<p class="logo" style="padding-top:0px;"><img src="{{ asset('build/images/logo.jpg') }}" style="width:100px; height:99px"/></p>
 					<a href="#" class="d-block mt-3 mb-3 border-bottom text-center">
 						<i class="bi bi-house-door-fill"></i>
 						Inicio</a>
@@ -65,7 +72,7 @@
 		<!-- Barra lateral izquierda -->
 		<aside class="col-md-2 p-0 bg-light border-end sticky-top position-relative" style="z-index: 1;">
 			<div class="funciones p-3 sticky-left sticky-top">
-				<p class="logo mb-5">LOGO</p>
+				<p class="logo" style="padding-top:0px;"><img src="{{ asset('build/images/logo.jpg') }}" style="width:100px; height:99px"/></p>
 				<a href="{{ path('app_homepage') }}" class="d-block mt-3 mb-3 border-bottom text-center">
 					<i class="bi bi-house-door-fill"></i>
 					Inicio</a>
@@ -210,12 +217,29 @@
 							</button>
 						</div>
 						<ul id="comment-list" type="none" class="mt-4">
-							{% for comment in review.comments %}
-								<li><img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 30px; height: 30px;"/>
-									<strong>{{ comment.user.username }}</strong>:
-									{{ comment.contenido }}</li>
-							{% endfor %}
-						</ul>
+    {% for comment in review.comments %}
+        <li class="d-flex align-items-start mb-2">
+            <img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" 
+                 alt="Foto de perfil" 
+                 class="rounded-circle me-2" 
+                 style="width: 30px; height: 30px;" />
+            <div class="flex-grow-1">
+                <strong>{{ comment.user.username }}</strong>: {{ comment.contenido }}
+            </div>
+            {% if app.user and (app.user == comment.user or app.user == review.user) %}
+                <form action="{{ path('app_delete_comment', { 'commentId': comment.id }) }}" method="post" 
+      class="ms-2 borrar-comentario" 
+      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este comentario?')">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit" class="btn btn-link text-danger p-0" title="Eliminar comentario">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>
+
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
 					</div>
 					{% if not loop.last %}
 						<hr>

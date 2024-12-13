@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use App\Entity\Notification;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\NotificationRepository;
@@ -18,29 +19,39 @@ use App\Repository\NotificationRepository;
 class ProfileController extends AbstractController
 {
     private $entityManager;
+    private $requestStack;
 
-    // Inyecta el EntityManagerInterface a través del constructor
-    public function __construct(EntityManagerInterface $entityManager)
+    // Inyecta el EntityManagerInterface y RequestStack a través del constructor
+    public function __construct(EntityManagerInterface $entityManager, RequestStack $requestStack)
     {
         $this->entityManager = $entityManager;
+        $this->requestStack = $requestStack;
     }
 
     #[Route('/profile/{username}', name: 'app_profile')]
-    public function index(string $username, EntityManagerInterface $entityManager,NotificationRepository $notificationRepository): Response
+    public function index(string $username, NotificationRepository $notificationRepository): Response
     {
         // Buscar el usuario por su nombre de usuario
-        $profileUser = $entityManager->getRepository(User::class)->findOneBy(['user' => $username]);
+        $profileUser = $this->entityManager->getRepository(User::class)->findOneBy(['user' => $username]);
 
         if (!$profileUser) {
             throw $this->createNotFoundException('Usuario no encontrado');
         }
 
         // Buscar las reseñas asociadas al usuario
-        $reviews = $entityManager->getRepository(Review::class)->findBy(['user' => $profileUser],['fechaPublicacion' => 'DESC']);
-        $notifications = $notificationRepository->findBy(['user' => $this->getUser()], ['createdAt' => 'DESC']);
+        $reviews = $this->entityManager->getRepository(Review::class)->findBy(
+            ['user' => $profileUser],
+            ['fechaPublicacion' => 'DESC']
+        );
+
+        $notifications = $notificationRepository->findBy(
+            ['user' => $this->getUser()],
+            ['createdAt' => 'DESC']
+        );
+
         return $this->render('profile.html.twig', [
             'user' => $profileUser,
-            'reviews' => $reviews, // Pasar las reseñas a la plantilla
+            'reviews' => $reviews,
             'notifications' => $notifications,
             'currentUser' => $this->getUser(),
         ]);
@@ -111,4 +122,33 @@ public function edit(
         
     ]);
 }
+
+
+    #[Route('/profile/{username}/delete', name: 'app_delete_profile')]
+    public function delete(string $username): Response
+    {
+        $user = $this->getUser();
+
+        if (!$user) {
+            $this->addFlash('error', 'Debes estar autenticado para eliminar tu perfil.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($user->getUsername() !== $username) {
+            $this->addFlash('error', 'No puedes eliminar el perfil de otro usuario.');
+            return $this->redirectToRoute('app_profile', ['username' => $user->getUsername()]);
+        }
+
+        // Eliminar al usuario y sus dependencias
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
+
+        // Invalidar la sesión actual
+        $session = $this->requestStack->getSession();
+        $session->invalidate();
+        $this->container->get('security.token_storage')->setToken(null);
+
+        $this->addFlash('success', 'Usuario eliminado con éxito.');
+        return $this->redirectToRoute('app_login');
+    }
 }

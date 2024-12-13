@@ -26,7 +26,7 @@
             <!-- Contenido del aside para móviles -->
             <div class="funciones">
                 <div class="funciones p-3 sticky-left sticky-top">
-					<p class="logo mb-5">LOGO</p>
+					<p class="logo" style="padding-top:0px;"><img src="{{ asset('build/images/logo.jpg') }}" style="width:100px; height:99px"/></p>
 					<a href="#" class="d-block mt-3 mb-3 border-bottom text-center">
 						<i class="bi bi-house-door-fill"></i>
 						Inicio</a>
@@ -74,7 +74,7 @@
 			<!-- Barra lateral izquierda -->
 			<aside class="col-md-2 p-0 bg-light border-end sticky-top position-relative d-none d-md-block" style="z-index: 1;">
 				<div class="funciones p-3 sticky-top sticky-left">
-					<p class="logo mb-5">LOGO</p>
+					<p class="logo" style="padding-top:0px;"><img src="{{ asset('build/images/logo.jpg') }}" style="width:100px; height:99px"/></p>
 					<a href="{{ path('app_homepage') }}" class="d-block mt-3 mb-3 border-bottom text-center">
 						<i class="bi bi-house-door-fill"></i>
 						Inicio
@@ -120,20 +120,25 @@
 					</div>
 					<div class="col-md-8">
 						<h3 class="d-flex justify-content-around align-items-center">
-    <div class="d-flex align-items-center">
-        <span class="text-muted small me-2">Seguidores: {{ user.followers | length }}</span>
-        <span class="text-muted small me-2">Seguidos: {{ user.following | length }}</span>
-        {% if app.user and app.user != user %}
-            {% if app.user.isFollowing(user) %}
-                <a href="{{ path('app_unfollow', { 'id': user.id }) }}" class="btn btn-danger btn-sm ms-3">Dejar de seguir</a>
-            {% else %}
-                <a href="{{ path('app_follow', { 'id': user.id }) }}" class="btn btn-primary btn-sm ms-3">Seguir</a>
-            {% endif %}
+    <div class="d-flex align-items-center flex-wrap">
+    <span class="text-muted small me-3">Seguidores: {{ user.followers | length }}</span>
+    <span class="text-muted small me-3">Seguidos: {{ user.following | length }}</span>
+    
+    {% if app.user and app.user != user %}
+        {% if app.user.isFollowing(user) %}
+            <a href="{{ path('app_unfollow', { 'id': user.id }) }}" class="btn btn-sm btn-outline-danger me-2">Dejar de seguir</a>
         {% else %}
-            <a href="{{ path('app_edit_profile', {'username': app.user.username}) }}" class="btn btn-primary btn-sm ms-3">Editar perfil</a>
+            <a href="{{ path('app_follow', { 'id': user.id }) }}" class="btn btn-sm btn-outline-primary me-2">Seguir</a>
         {% endif %}
-    </div>
-</h3>
+    {% elseif app.user and app.user == user %}
+        <a href="{{ path('app_edit_profile', {'username': app.user.username}) }}" class="btn btn-sm btn-outline-primary me-2">Editar perfil</a>
+        <form action="{{ path('app_delete_profile', {'username': user.user}) }}" method="post" class="d-inline" 
+              onsubmit="return confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')">
+            <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar Cuenta</button>
+        </form>
+    {% endif %}
+</div>
+
 
 					</div>
 				</div>
@@ -219,10 +224,29 @@
                             {% if review.comments|length > 0 %}
                             <p>Comentarios:</p>
 							<ul id="comment-list" type="none" class="mt-4">
-						{% for comment in review.comments %}
-							<li><img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" alt="Foto de perfil" class="rounded-circle" style="width: 30px; height: 30px;"/> <strong>{{ comment.user.username }}</strong>: {{ comment.contenido }}</li>
-						{% endfor %}
-					</ul>
+    {% for comment in review.comments %}
+        <li class="d-flex align-items-start mb-2">
+            <img src="{{ comment.user.fotoPerfil is not null ? comment.user.fotoPerfil : asset('build/images/usuario.jpeg') }}" 
+                 alt="Foto de perfil" 
+                 class="rounded-circle me-2" 
+                 style="width: 30px; height: 30px;" />
+            <div class="flex-grow-1">
+                <strong>{{ comment.user.username }}</strong>: {{ comment.contenido }}
+            </div>
+            {% if app.user and (app.user == comment.user or app.user == review.user) %}
+                <form action="{{ path('app_delete_comment', { 'commentId': comment.id }) }}" method="post" 
+      class="ms-2 borrar-comentario" 
+      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este comentario?')">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit" class="btn btn-link text-danger p-0" title="Eliminar comentario">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>
+
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
                     {% endif %}
 							</div>
 						{% else %}

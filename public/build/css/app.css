@@ -43,11 +43,12 @@ footer{
 
 /* Archivo CSS o en tu archivo correspondiente */
 .custom-follow-button {
-    position: absolute;
-    right: 0;
+
     font-size: 1rem; /* Tamaño de fuente por defecto */
     padding: 0.5rem 1rem; /* Espaciado interno del botón */
 }
+
+
 
 
 

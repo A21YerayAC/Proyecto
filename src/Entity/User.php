@@ -173,6 +173,13 @@ public function getComments(): Collection
         return $this;
     }
 
+    public function setUser(string $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+
     public function setPassword(string $password): self
     {
         $this->password = $password;

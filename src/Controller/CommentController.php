@@ -59,4 +59,52 @@ class CommentController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'Error al guardar el comentario'], 500);
         }
     }
+
+    #[Route('/comment/delete/{commentId}', name: 'app_delete_comment')]
+public function deleteComment(int $commentId, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\Response
+{
+    $user = $this->getUser();
+    $comment = $entityManager->getRepository(Comment::class)->find($commentId);
+
+    if (!$comment) {
+        $this->addFlash('error', 'Comentario no encontrado');
+        return $this->redirectToRoute('app_home');
+    }
+
+    // Verificar permisos
+    if ($user !== $comment->getUser() && $user !== $comment->getReview()->getUser()) {
+        $this->addFlash('error', 'No tienes permiso para eliminar este comentario');
+        return $this->redirectToRoute('app_homepage');
+    }
+
+    try {
+        $entityManager->remove($comment);
+
+        // Eliminar notificación asociada
+        $notification = $entityManager->getRepository(Notification::class)->findOneBy([
+            'user' => $comment->getReview()->getUser(),
+            'type' => 'comment',
+            'review' => $comment->getReview(),
+        ]);
+
+        if ($notification) {
+            $entityManager->remove($notification);
+        }
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Comentario eliminado con éxito.');
+        return $this->redirectToRoute('app_homepage');
+    } catch (\Exception $e) {
+        error_log('Error al eliminar comentario: ' . $e->getMessage());
+        $this->addFlash('error', 'Error al eliminar el comentario');
+        return $this->redirectToRoute('app_homepage');
+    }
+}
+
+    
+
+
+
+
 }

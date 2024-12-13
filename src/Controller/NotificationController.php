@@ -1,5 +1,4 @@
 <?php
-// src/Controller/NotificationController.php
 namespace App\Controller;
 
 use App\Entity\Notification;
@@ -13,10 +12,22 @@ class NotificationController extends AbstractController
     public function index(EntityManagerInterface $entityManager)
     {
         $user = $this->getUser();
+        
+        // Obtener las notificaciones del usuario
         $notifications = $entityManager->getRepository(Notification::class)->findBy(
             ['user' => $user],
             ['createdAt' => 'DESC']
         );
+
+        // Marcar las notificaciones como leídas
+        foreach ($notifications as $notification) {
+            if (!$notification->getIsRead()) {
+                $notification->setIsRead(true);
+                $entityManager->persist($notification);
+            }
+        }
+        $entityManager->flush();  // Guardar los cambios
+
         return $this->render('notification/index.html.twig', [
             'notifications' => $notifications,
         ]);
