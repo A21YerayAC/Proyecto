@@ -1,0 +1,6 @@
+# config/packages/your_custom_directory.yaml
+framework:
+  web_dir: "%kernel.project_dir%/public"
+  assets:
+    external: true
+    base_path: '/178.62.211.186/imagenes'
